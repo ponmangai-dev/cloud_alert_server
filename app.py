@@ -16,10 +16,17 @@ client = Client(TWILIO_SID, TWILIO_AUTH)
 def alert():
     data = request.json
     msg = data.get("message", "Alert received")
+    latitude = data.get("latitude")   # Get latitude from JSON
+    longitude = data.get("longitude") # Get longitude from JSON
+
+    # Build SMS message
+    sms_text = msg
+    if latitude and longitude:
+        sms_text += f"\nLocation: https://maps.google.com/?q={latitude},{longitude}"
 
     # Send SMS
     message = client.messages.create(
-        body=msg,
+        body=sms_text,
         from_=TWILIO_NUMBER,
         to=TARGET_NUMBER
     )
